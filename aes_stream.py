@@ -87,7 +87,7 @@ class AES_OFB(AES):
             prev_state = self.cipher(prev_state).astype(np.uint8)
             xor_len = min(len(encoded) - i, len(prev_state))
             encoded[i:i + xor_len] ^= prev_state[:xor_len]
-            i += len(encoded)
+            i += len(prev_state)
 
         return encoded
 
