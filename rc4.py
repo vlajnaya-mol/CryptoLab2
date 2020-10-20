@@ -28,9 +28,9 @@ class RC4:
             t = S[i] + S[j]
             yield S[t]
 
-    def encode(self, stream_bytes):
+    def encrypt(self, stream_bytes):
         gen = self.__prga()
         return np.array(list(map(lambda x: np.bitwise_xor(x, next(gen)), stream_bytes)))
     
-    def decode(self, encoded_bytes):
-        return self.encode(encoded_bytes)
+    def decrypt(self, encoded_bytes):
+        return self.encrypt(encoded_bytes)

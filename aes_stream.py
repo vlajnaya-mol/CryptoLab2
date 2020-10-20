@@ -6,11 +6,11 @@ class AES_ECB(AES):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def encode(self, stream):
+    def encrypt(self, stream):
         stream = stream.reshape((-1, 16))
         return np.array([self.cipher(inp) for inp in stream]).flatten()
 
-    def decode(self, stream):
+    def decrypt(self, stream):
         stream = stream.reshape((-1, 16))
         return np.array([self.inv_cipher(inp) for inp in stream]).flatten()
 
@@ -20,7 +20,7 @@ class AES_CBC(AES):
         super().__init__(*args, **kwargs)
         self.init_state = np.random.randint(0, 256, 16)
 
-    def encode(self, stream):
+    def encrypt(self, stream):
         stream = stream.reshape((-1, 16))
         prev_state = self.init_state
 
@@ -30,7 +30,7 @@ class AES_CBC(AES):
             prev_state = encoded[-1]
         return np.array(encoded).flatten()
 
-    def decode(self, stream):
+    def decrypt(self, stream):
         stream = stream.reshape((-1, 16))
         prev_state = self.init_state
 
@@ -47,7 +47,7 @@ class AES_CFB(AES):
         self.init_state = np.random.randint(0, 256, 16)
         self.n = 4
 
-    def encode(self, stream):
+    def encrypt(self, stream):
         stream = stream.reshape((-1, self.n))
 
         prev_state = self.init_state
@@ -60,7 +60,7 @@ class AES_CFB(AES):
 
         return np.array(encoded).flatten()
 
-    def decode(self, stream):
+    def decrypt(self, stream):
         stream = stream.reshape((-1, self.n))
 
         prev_state = self.init_state
@@ -79,7 +79,7 @@ class AES_OFB(AES):
         super().__init__(*args, **kwargs)
         self.init_state = np.random.randint(0, 256, 16)
 
-    def encode(self, stream):
+    def encrypt(self, stream):
         prev_state = self.init_state
         encoded = stream.copy()
         i = 0
@@ -91,8 +91,8 @@ class AES_OFB(AES):
 
         return encoded
 
-    def decode(self, stream):
-        return self.encode(stream)
+    def decrypt(self, stream):
+        return self.encrypt(stream)
 
 
 class AES_CTR(AES):
@@ -109,10 +109,10 @@ class AES_CTR(AES):
             cnt[i] = 0
         return cnt
 
-    def encode(self, stream):
+    def encrypt(self, stream):
         stream = stream.reshape((-1, 16))
         cnt = self.init_cnt.copy()
         return np.array([np.bitwise_xor(self.cipher(self.count(cnt)), inp) for inp in stream]).flatten()
 
-    def decode(self, stream):
-        return self.encode(stream)
+    def decrypt(self, stream):
+        return self.encrypt(stream)

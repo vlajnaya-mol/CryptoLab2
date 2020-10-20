@@ -66,7 +66,7 @@ class Salsa20:
         hashed_stream = hash((np.uint64(arr_32bits[0]) << np.uint64(32)) + np.uint64(arr_32bits[1]))
         return Salsa20.int64_to_ints32(np.uint64(hashed_stream))
 
-    def encode(self, stream):
+    def encrypt(self, stream):
         if stream.dtype == np.uint8:
             stream = self.bytes_to_32bits(stream)
             
@@ -78,6 +78,6 @@ class Salsa20:
         
         return self.bytes_from_32bits(encoded)
     
-    def decode(self, stream):
-        return self.encode(stream)
+    def decrypt(self, stream):
+        return self.encrypt(stream)
         
